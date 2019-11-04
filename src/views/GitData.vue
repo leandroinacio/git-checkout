@@ -2,13 +2,13 @@
   <div id="git-content">
     <img alt="Vue logo" class="main__img" :src="data.avatar_url" />
     <div class="main__row">
-      <label class="main__label">ID: {{data.id}}</label>
+      <label class="main__label"><strong>ID:</strong> {{data.id}}</label>
     </div>
     <div class="main__row">
-      <label class="main__label">Github Username: {{data.login}}</label>
+      <label class="main__label"><strong>Github Username:</strong> {{data.login}}</label>
     </div>
     <div class="main__row">
-      <label class="main__label">Github Name: {{data.name}}</label>
+      <label class="main__label"><strong>Name:</strong> {{data.name}}</label>
     </div>
     <div class="main__row" v-show="data.company">
       <label class="main__label">Company: {{data.company}}</label>
@@ -80,12 +80,12 @@ export default {
         this.errorState = true
         this.data = error.data
       }).finally(() => {
-        // Fix the heigh being calculated before fetch finished
-        const mainDiv = document.getElementById('git-content')
-        mainDiv.updatedHeight = '100%'
-        this.$emit('calculateHeight', mainDiv)
+        this.$emit('loading', false)
       });
     }
+  },
+  beforeCreate () {
+    this.$emit('loading', true)
   },
   created () {
     this.getGitData()

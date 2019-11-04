@@ -2,9 +2,11 @@
   <div>
     <div class="main__row">
       <label for="email" class="main__label">Email</label>
-      <input id="email" type="email"
-      :class="['main__input', { 'main__input--success': email.length, 'main__input--invalid': !email.length }]"
+      <input id="email" type="email" @keyup.once="isEmailDirty=true"
+      :class="['main__input', { 'main__input--success': isEmailValid, 'main__input--invalid': isEmailEmptyAndDirty || (!isEmailValid && this.email.length) }]"
       v-model="email" />
+      <small class="main__msg--error" v-show="isEmailEmptyAndDirty">Email is required.</small>
+      <small class="main__msg--error" v-show="!isEmailValid && email.length">Invalid email.</small>
     </div>
     <div class="main__row">
       <input id="eula" type="checkbox" v-model="eula" />
@@ -25,7 +27,14 @@ export default {
   data () {
     return {
       email: '',
+      isEmailDirty: false,
       eula: false
+    }
+  },
+  watch: {
+    // Save entered data for better user experience - do not save checkbox status, make sure user always check it
+    email () {
+      sessionStorage.setItem('email', this.email)
     }
   },
   components: {
@@ -33,18 +42,24 @@ export default {
   },
   computed: {
     isInfoInvalid () {
-      return !(this.email.length && this.eula)
+      return !(this.isEmailValid && this.eula)
+    },
+    isEmailEmptyAndDirty () {
+      return !this.email.length && this.isEmailDirty
+    },
+    isEmailValid () {
+      const emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/
+      return this.isEmailDirty && this.email.length && emailPattern.test(this.email)
     }
   },
 
   // Load previously entered data - for better user experience
   created () {
-    this.email = sessionStorage.getItem('email')
-  },
-
-  // Save entered data for better user experience - do not save checkbox status, make sure user always check it
-  beforeDestroy () {
-    sessionStorage.setItem('email', this.email)
+    const email = sessionStorage.getItem('email')
+    if (email) {
+      this.isEmailDirty = true
+      this.email = email
+    }
   }
 }
 </script>

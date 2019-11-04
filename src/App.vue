@@ -1,12 +1,13 @@
 <template>
-  <div id="app" class="content">
-    <header>{{$route.meta.title}}</header>
-    <main class="main">
+  <div id="app">
+    <div class="loader" v-show="isLoading"></div>
+    <header v-show="!isLoading">{{$route.meta.title}}</header>
+    <main class="main" v-show="!isLoading">
       <transition :name="transition" mode="out-in" @beforeLeave="beforeLeave" @enter="enter">
-        <router-view v-on:calculateHeight="enter" />
+        <router-view v-on:calculateHeight="enter" v-on:loading="setLoadingStatus" />
       </transition>
     </main>
-    <footer>
+    <footer v-show="!isLoading">
       <small>
         Created by
         <a href="https://www.linkedin.com/in/leinaciosouza/">Leandro Inácio</a> on 2019
@@ -20,20 +21,23 @@ export default {
   name: 'App',
   data () {
     return {
-      transition: 'slide-right'
+      transition: 'slide-right',
+      isLoading: false
     }
   },
   methods: {
+    setLoadingStatus (status) {
+      this.isLoading = status
+    },
+    // Recalculate height to transition footer smoothly
     beforeLeave (element) {
       this.prevHeight = getComputedStyle(element).height;
     },
     enter (element) {
-      const { height } = getComputedStyle(element);
-
       element.style.height = this.prevHeight;
 
       setTimeout(() => {
-        element.style.height = element.updatedHeight || height;
+        element.style.height = '100%'
       });
     }
   },
@@ -45,12 +49,6 @@ export default {
 
       next()
     })
-
-    // Check for any existing user data before allowing navigation to different pages
-    // const userData = JSON.parse(sessionStorage.getItem('user'));
-    // if (!userData || !userData.username || !userData.firstName || !userData.lastName) {
-    //   this.$router.push('/')
-    // }
   }
 }
 </script>
@@ -149,6 +147,11 @@ a:visited {
   border: 1px solid #c83531;
 }
 
+.main__msg--error {
+  color: red;
+  padding: 1rem;
+}
+
 @media all and (max-width: 50rem) {
   header {
     margin: auto;
@@ -166,6 +169,31 @@ a:visited {
   footer {
     margin: auto;
     width: 95%;
+  }
+
+  .main__msg--error {
+    width: 95%;
+    display: block;
+  }
+}
+
+/* LOADER */
+.loader {
+  border: 1.6rem solid white;
+  border-radius: 50%;
+  border-top: 1.6rem solid #273b66;
+  width: 12rem;
+  height: 12rem;
+  animation: spin 1s linear infinite;
+  transition: max-height 0.3s ease-in-out;
+}
+
+@keyframes spin {
+  0% {
+    transform: rodate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 
