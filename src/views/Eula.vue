@@ -1,21 +1,31 @@
 <template>
   <div>
+    <!-- Email -->
     <div class="main__row">
       <label for="email" class="main__label">Email</label>
       <input id="email" type="email" @keyup.once="isEmailDirty=true"
       :class="['main__input', { 'main__input--success': isEmailValid, 'main__input--invalid': isEmailEmptyAndDirty || (!isEmailValid && this.email.length) }]"
       v-model="email" />
-      <small class="main__msg--error" v-show="isEmailEmptyAndDirty">Email is required.</small>
-      <small class="main__msg--error" v-show="!isEmailValid && email.length">Invalid email.</small>
+      <!-- Error messages - make it a component -->
+      <transition name="fade" mode="out-in">
+        <small class="main__msg--error" v-show="isEmailEmptyAndDirty">Email is required.</small>
+      </transition>
+      <transition name="fade" mode="out-in">
+        <small class="main__msg--error" v-show="!isEmailValid && email.length">Invalid email.</small>
+      </transition>
     </div>
+
+    <!-- EULA -->
     <div class="main__row">
       <input id="eula" type="checkbox" v-model="eula" />
       <label for="eula" class="main__label--eula">I agree with terms and services</label>
     </div>
-    <div class="main__buttons">
+
+    <!-- Nav -->
+    <nav class="main__buttons">
       <Button msg="Previous" page="simple-form" :disabled="false" />
       <Button msg="Next" page="git-data" :disabled="isInfoInvalid" />
-    </div>
+    </nav>
   </div>
 </template>
 

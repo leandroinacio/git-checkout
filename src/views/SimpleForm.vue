@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- UserName -->
     <!-- Should think about making components from these rows -->
     <div class="main__row">
       <label for="github-name" class="main__label">Github Username:</label>
@@ -9,19 +10,30 @@
         type="text" @keyup.once="setFieldDirty('userName')"
         v-model="user.userName" @change="validateUserName"
       />
-      <small class="main__msg--error" v-show="isUserNameEmptyAndDirty">Username is required.</small>
-      <small class="main__msg--error" v-show="isUserNotFound && !isUserNameEmptyAndDirty">Git user was not found.</small>
+      <!-- These error messages should become a component next time -->
+      <transition name="fade" mode="out-in">
+        <small class="main__msg--error" v-show="isUserNameEmptyAndDirty">Username is required.</small>
+      </transition>
+      <transition name="fade" mode="out-in">
+        <small class="main__msg--error" v-show="isUserNotFound && !isUserNameEmptyAndDirty">Git user was not found.</small>
+      </transition>
     </div>
+
+    <!-- First Name -->
     <div class="main__row">
       <label for="first-name" class="main__label">First Name:</label>
       <input
         id="first-name"
         :class="['main__input', { 'main__input--success': user.firstName.length, 'main__input--invalid': isFirstNameEmptyAndDirty }]"
-        type="text" @keyup="setFieldDirty('firstName')"
+        type="text" @keyup.once="setFieldDirty('firstName')"
         v-model="user.firstName"
       />
-      <small class="main__msg--error" v-show="isFirstNameEmptyAndDirty">First name is required.</small>
+      <transition name="fade" mode="out-in">
+        <small class="main__msg--error" v-show="isFirstNameEmptyAndDirty">First name is required.</small>
+      </transition>
     </div>
+
+    <!-- Last Name -->
     <div class="main__row">
       <label for="last-name" class="main__label">Last Name:</label>
       <input
@@ -30,12 +42,16 @@
         type="text" @keyup.once="setFieldDirty('lastName')"
         v-model="user.lastName"
       />
-      <small class="main__msg--error" v-show="isLastNameEmptyAndDirty">Last name is required.</small>
+      <transition name="fade" mode="out-in">
+        <small class="main__msg--error" v-show="isLastNameEmptyAndDirty">Last name is required.</small>
+      </transition>
     </div>
-    <div class="main__buttons">
+
+    <!-- Nav -->
+    <nav class="main__buttons">
       <Button msg="Previous" page="home" :disabled="false" />
       <Button msg="Next" page="eula" :disabled="isInfoInvalid" />
-    </div>
+    </nav>
   </div>
 </template>
 
@@ -52,6 +68,8 @@ export default {
         lastName: '',
         userName: ''
       },
+
+      // For form validation, could have used vuelidade, but decided to do it without to exercise the framework capabilities
       isFieldDirty: {
         firstName: false,
         lastName: false,
@@ -76,12 +94,15 @@ export default {
     },
     validateUserName () {
       if (!this.user.userName.length) return
+
+      // This fetch should become a method in a repository file in the real world
+      // Axios configuration should be defined in the real world
       axios.get(`https://api.github.com/users/${this.user.userName}`).then(response => {
         this.isUserNameValid = true
       }).catch(error => {
         console.log(error)
         this.isUserNameValid = false
-      })
+      }).finally(() => this.setFieldDirty('userName'))
     }
   },
   computed: {

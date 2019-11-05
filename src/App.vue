@@ -10,7 +10,7 @@
     <footer v-show="!isLoading">
       <small>
         Created by
-        <a href="https://www.linkedin.com/in/leinaciosouza/">Leandro Inácio</a> on 2019
+        <a title="Leandro Souza Linkedin" href="https://www.linkedin.com/in/leinaciosouza/">Leandro Inácio</a> on 2019
       </small>
     </footer>
   </div>
@@ -26,6 +26,8 @@ export default {
     }
   },
   methods: {
+
+    // Used in the GitData page, where we load user data and wait for the response to display the page
     setLoadingStatus (status) {
       this.isLoading = status
     },
@@ -46,7 +48,6 @@ export default {
       // Add transition to the left or to the right, depending on page level (defined on router/index.js)
       this.transition =
         to.meta.level < from.meta.level ? 'slide-right' : 'slide-left'
-
       next()
     })
   }
@@ -67,9 +68,7 @@ export default {
 body {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  align-content: center;
 }
 
 header {
@@ -85,6 +84,7 @@ header {
   font-weight: bold;
   padding: 0.5rem 0.5rem;
   border: #273b66 solid 1px;
+  transition: 0.5s;
 }
 
 footer {
@@ -150,6 +150,7 @@ a:visited {
 .main__msg--error {
   color: red;
   padding: 1rem;
+  transition: 0.5s;
 }
 
 @media all and (max-width: 50rem) {
@@ -198,6 +199,12 @@ a:visited {
 }
 
 /* Transitions */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter, .fade-leave-to { opacity: 0 }
+
 .slide-left-enter-active,
 .slide-left-leave-active,
 .slide-right-enter-active,
