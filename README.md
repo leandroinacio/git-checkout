@@ -1,7 +1,7 @@
 # git-checkout
 
 Made with Vue.
-Live example: https://5dc1b47b79512d7417cce6eb--peaceful-mahavira-5906de.netlify.com/#/
+Live example: https://peaceful-mahavira-5906de.netlify.com/
 
 ## Project setup
 1. Install dependencies with:
@@ -24,23 +24,32 @@ npm run serve
 7. Does not allow direct access of pages from browsers without required information
 
 ### Project Structure
-
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+├── src
+│   ├── components
+│   │   ├── Button.vue
+│   ├── router
+│   │   ├── index.js
+│   ├── views
+│   │   ├── Eula.vue
+│   │   ├── GitData.vue
+│   │   ├── Home.vue
+│   │   ├── SimpleForm.vue
+│   ├── App.vue
+│   ├── main.js
+├── babel.config.js
+├── package-lock.json
+├── package.json
+├── README.md
+└── .gitignore
 
 ### Other options
 
 - Compiles and minifies for production
 ```
 npm run build
-```
-
-- Run your unit tests
-```
-npm run test:unit
-```
-
-- Run your end-to-end tests
-```
-npm run test:e2e
 ```
 
 - Lints and fixes files
