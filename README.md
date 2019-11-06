@@ -23,27 +23,27 @@ npm run serve
 6. Allows the usage of the previous/next browser's navigation
 7. Does not allow direct access of pages from browsers without required information
 
-### Project Structure
-├── public
-│   ├── favicon.ico
-│   ├── index.html
-├── src
-│   ├── components
-│   │   ├── Button.vue
-│   ├── router
-│   │   ├── index.js
-│   ├── views
-│   │   ├── Eula.vue
-│   │   ├── GitData.vue
-│   │   ├── Home.vue
-│   │   ├── SimpleForm.vue
-│   ├── App.vue
-│   ├── main.js
-├── babel.config.js
-├── package-lock.json
-├── package.json
-├── README.md
-└── .gitignore
+### Project Structure\
+├── public\
+│   ├── favicon.ico\
+│   ├── index.html\
+├── src\
+│   ├── components\
+│   │   ├── Button.vue\
+│   ├── router\
+│   │   ├── index.js\
+│   ├── views\
+│   │   ├── Eula.vue\
+│   │   ├── GitData.vue\
+│   │   ├── Home.vue\
+│   │   ├── SimpleForm.vue\
+│   ├── App.vue\
+│   ├── main.js\
+├── babel.config.js\
+├── package-lock.json\
+├── package.json\
+├── README.md\
+└── .gitignore\
 
 ### Other options
 
