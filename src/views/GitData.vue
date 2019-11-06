@@ -1,6 +1,6 @@
 <template>
   <transition name="fade" mode="out-in">
-    <div v-show="data.id || errorState">
+    <div v-cloak v-show="data.id || errorState">
 
       <!-- User data -->
       <div v-if="!errorState" id="git-content">
@@ -114,6 +114,10 @@ export default {
 </script>
 
 <style scoped>
+[v-cloak] {
+  display: none;
+}
+
 #git-content {
   display: flex;
   justify-content: center;

@@ -1,15 +1,24 @@
 <template>
-  <router-link :to="{ name: page }" :disabled="disabled" tag="button" :class="['main__button', { disabled: disabled }, classes]">{{msg}}</router-link>
+  <div>
+    <router-link v-if="!eventName" :to="{ name: page }" :disabled="disabled" tag="button" :class="['main__button', { disabled: disabled }, classes]">{{msg}}</router-link>
+    <button v-else @click="triggerEvent" :disabled="disabled" :class="['main__button', { disabled: disabled }, classes]">{{msg}}</button>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'Button',
+  methods: {
+    triggerEvent () {
+      this.$emit(this.eventName)
+    }
+  },
   props: {
     msg: String,
     page: String,
     classes: String,
-    disabled: Boolean
+    disabled: Boolean,
+    eventName: String
   }
 }
 </script>

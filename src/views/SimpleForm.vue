@@ -1,24 +1,6 @@
 <template>
   <div>
-    <!-- UserName -->
     <!-- Should think about making components from these rows -->
-    <div class="main__row">
-      <label for="github-name" class="main__label">Github Username:</label>
-      <input
-        id="github-name"
-        :class="['main__input', { 'main__input--success': isUserNameValid, 'main__input--invalid': isUserNameEmptyAndDirty || isUserNotFound }]"
-        type="text" @keyup.once="setFieldDirty('userName')"
-        v-model="user.userName" @change="validateUserName"
-      />
-      <!-- These error messages should become a component next time -->
-      <transition name="fade" mode="out-in">
-        <small class="main__msg--error" v-show="isUserNameEmptyAndDirty">Username is required.</small>
-      </transition>
-      <transition name="fade" mode="out-in">
-        <small class="main__msg--error" v-show="isUserNotFound && !isUserNameEmptyAndDirty">Git user was not found.</small>
-      </transition>
-    </div>
-
     <!-- First Name -->
     <div class="main__row">
       <label for="first-name" class="main__label">First Name:</label>
@@ -47,10 +29,31 @@
       </transition>
     </div>
 
+    <!-- UserName -->
+    <div class="main__row">
+      <label for="github-name" class="main__label">Github Username:</label>
+      <input
+        id="github-name"
+        :class="['main__input', { 'main__input--success': !isUserNameNotFound, 'main__input--invalid': (isUserNameEmptyAndDirty || isUserNameNotFound) && user.userName.length }]"
+        type="text" @keyup.once="setFieldDirty('userName')"
+        v-model="user.userName" />
+      <!-- These error messages should become a component next time -->
+      <transition name="fade" mode="out-in">
+        <small class="main__msg--error" v-show="isUserNameEmptyAndDirty">Username is required.</small>
+      </transition>
+      <transition name="fade" mode="out-in">
+        <small class="main__msg--error" v-show="!isUserNameValidated && user.userName.length">Git user was not validated.</small>
+      </transition>
+      <transition name="fade" mode="out-in">
+        <small class="main__msg--error" v-show="isUserNameNotFound && isUserNameValidated">Git user was not found.</small>
+      </transition>
+    </div>
+
     <!-- Nav -->
     <nav class="main__buttons">
       <Button msg="Previous" page="home" :disabled="false" />
-      <Button msg="Next" page="eula" :disabled="isInfoInvalid" />
+      <Button msg="Validate User" v-show="isUserNameNotFound" eventName="validateUserName" v-on:validateUserName="validateUserName" :disabled="!user.userName.length" />
+      <Button msg="Next" v-show="!isUserNameNotFound" page="eula" :disabled="isInfoInvalid" />
     </nav>
   </div>
 </template>
@@ -75,7 +78,10 @@ export default {
         lastName: false,
         userName: false
       },
-      isUserNameValid: false
+      validatedUser: {
+        lastValid: '',
+        lastAttempt: ''
+      }
     }
   },
   watch: {
@@ -98,16 +104,18 @@ export default {
       // This fetch should become a method in a repository file in the real world
       // Axios configuration should be defined in the real world
       axios.get(`https://api.github.com/users/${this.user.userName}`).then(response => {
-        this.isUserNameValid = true
+        this.validatedUser.lastValid = this.user.userName
       }).catch(error => {
         console.log(error)
-        this.isUserNameValid = false
-      }).finally(() => this.setFieldDirty('userName'))
+      }).finally(() => {
+        this.validatedUser.lastAttempt = this.user.userName
+        this.setFieldDirty('userName')
+      })
     }
   },
   computed: {
     isInfoInvalid () {
-      return !(this.user.firstName.length && this.user.lastName.length && this.user.userName.length) || this.isUserNotFound
+      return !(this.user.firstName.length && this.user.lastName.length && this.user.userName.length) || this.isUserNameNotFound
     },
     isFirstNameEmptyAndDirty () {
       return !this.user.firstName.length && this.isFieldDirty.firstName
@@ -118,8 +126,11 @@ export default {
     isUserNameEmptyAndDirty () {
       return !this.user.userName.length && this.isFieldDirty.userName
     },
-    isUserNotFound () {
-      return this.isFieldDirty.userName && !this.isUserNameValid
+    isUserNameNotFound () {
+      return !this.user.userName.length || !this.validatedUser.lastValid.length || this.validatedUser.lastValid !== this.user.userName
+    },
+    isUserNameValidated () {
+      return this.user.userName.length && (this.validatedUser.lastAttempt.length || this.validatedUser.lastValid.length) && (this.validatedUser.lastValid === this.user.userName || this.validatedUser.lastAttempt === this.user.userName)
     }
   },
   components: {
